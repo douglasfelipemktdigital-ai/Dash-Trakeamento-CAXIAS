@@ -184,39 +184,79 @@ select{color-scheme:dark;}
 
 /* ── MOBILE ── */
 @media(max-width:768px){
+  /* Esconder sidebar lateral */
+  .sb{display:none;}
+  
+  /* App vira coluna: topbar → content → tab bar */
   #app{flex-direction:column;}
-  .sb{width:100%;height:auto;flex-direction:row;flex-wrap:wrap;border-right:none;border-bottom:1px solid var(--bdr);}
-  .sb-logo{padding:10px 14px;border-bottom:none;border-right:1px solid var(--bdr);display:flex;align-items:center;gap:10px;flex-shrink:0;}
-  .sb-logo-unit{display:none;}
-  .sb-nav{flex:1;padding:6px 8px;display:flex;flex-direction:row;overflow-x:auto;gap:2px;scrollbar-width:none;}
-  .sb-nav::-webkit-scrollbar{display:none;}
-  .sb-grp{display:none;}
-  .sb-item{padding:7px 10px;border-radius:8px;flex-shrink:0;font-size:11px;}
-  .sb-fil{display:none;}
-  .sb-back{display:none;}
-  .main{flex:1;min-height:0;}
+  .main{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;}
+  
+  /* Topbar compacto */
   .topbar{padding:10px 14px;}
   .tb-title{font-size:13px;}
   .tb-sig{display:none;}
-  .content{padding:12px 14px;}
+  .tb-live{display:none;}
+  
+  /* Content sem padding excessivo, deixar espaço para tab bar */
+  .content{padding:12px 12px 80px 12px;}
+  
+  /* Grids mobile */
   .g4{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;}
   .g2{grid-template-columns:minmax(0,1fr);gap:10px;}
   .g2e{grid-template-columns:minmax(0,1fr);gap:10px;}
-  .kc-val{font-size:24px;}
-  .kc-val-md{font-size:18px;}
+  .kc-val{font-size:22px;}
+  .kc-val-md{font-size:17px;}
+  
+  /* Funil por anúncio */
   .fad-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
-  .fad-num{font-size:18px;}
-  /* Periodo - botoes em faixa horizontal no mobile */
-  .sb-fil-mobile{display:flex;overflow-x:auto;gap:6px;padding:6px 14px;background:rgba(6,8,18,.7);border-bottom:1px solid var(--bdr);flex-shrink:0;scrollbar-width:none;}
+  .fad-num{font-size:17px;}
+  
+  /* Período mobile — faixa deslizável */
+  .sb-fil-mobile{display:flex;overflow-x:auto;gap:6px;padding:6px 12px;background:rgba(6,8,18,.85);border-bottom:1px solid var(--bdr);flex-shrink:0;scrollbar-width:none;-webkit-overflow-scrolling:touch;}
   .sb-fil-mobile::-webkit-scrollbar{display:none;}
-  .sb-fil-mobile .sb-pbtn{white-space:nowrap;padding:5px 10px;border-radius:20px;font-size:10px;flex-shrink:0;}
-  .footer{padding:8px 14px;flex-wrap:wrap;gap:4px;}
-  .footer-l{font-size:9px;}
+  .sb-fil-mobile .sb-pbtn{white-space:nowrap;padding:5px 12px;border-radius:20px;font-size:10px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid var(--bdr);color:var(--t3);}
+  .sb-fil-mobile .sb-pbtn.active{background:rgba(0,212,255,.1);color:var(--acc2);border-color:rgba(0,212,255,.2);}
+  
+  /* Footer mobile oculto */
+  .footer{display:none;}
+  
+  /* Campanhas — cards mais compactos */
+  .camp-stats{gap:8px;}
+  .camp-stat-v{font-size:13px;}
+  .conj-nums{gap:8px;}
+}
+
+/* TAB BAR MOBILE — fixa na base */
+#mobile-tabbar{
+  display:none;
+  position:fixed;
+  bottom:0;left:0;right:0;
+  height:64px;
+  background:rgba(7,9,20,.97);
+  border-top:1px solid var(--bdr);
+  backdrop-filter:blur(20px);
+  z-index:100;
+  align-items:stretch;
+}
+.mtab{
+  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:3px;cursor:pointer;border:none;background:none;
+  color:var(--t3);transition:color .15s;
+  -webkit-tap-highlight-color:transparent;
+  padding:8px 4px;
+}
+.mtab i{font-size:20px;}
+.mtab span{font-size:9px;letter-spacing:.5px;text-transform:uppercase;}
+.mtab.active{color:var(--acc);}
+.mtab.active i{text-shadow:0 0 12px rgba(74,158,255,.5);}
+
+@media(max-width:768px){
+  #mobile-tabbar{display:flex;}
 }
 @media(min-width:769px){
   .sb-fil-mobile{display:none;}
-}
-</style>
+  #mobile-tabbar{display:none;}
+}</style>
 </head>
 <body>
 <canvas id="bgc"></canvas>
@@ -370,6 +410,15 @@ select{color-scheme:dark;}
       </div>
 
     </div>
+    <!-- Tab bar mobile -->
+    <nav id="mobile-tabbar">
+      <button class="mtab active" data-page="geral"><i class="ti ti-layout-dashboard"></i><span>Geral</span></button>
+      <button class="mtab" data-page="anuncios"><i class="ti ti-speakerphone"></i><span>Anúncios</span></button>
+      <button class="mtab" data-page="agenda"><i class="ti ti-calendar-check"></i><span>Agenda</span></button>
+      <button class="mtab" data-page="funil"><i class="ti ti-filter"></i><span>Funil</span></button>
+      <button class="mtab" data-page="roi"><i class="ti ti-coin"></i><span>ROI</span></button>
+      <button class="mtab" data-page="campanhas"><i class="ti ti-hierarchy"></i><span>Camp.</span></button>
+    </nav>
     <footer class="footer">
       <div class="footer-l f-inter">Criado e monitorado por <b>Douglas Felipe</b> · Todos os direitos reservados © 2026</div>
       <div style="font-family:'Poppins',sans-serif;font-size:13px;font-weight:800;background:linear-gradient(90deg,#7B2FF7,#F7567C,#FFB347);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;">LOTHUS</div>
@@ -385,9 +434,13 @@ select{color-scheme:dark;}
   rsz();window.addEventListener('resize',rsz);
   document.addEventListener('mousemove',function(e){M.x=e.clientX;M.y=e.clientY;});
   document.addEventListener('mouseleave',function(){M.x=-999;M.y=-999;});
-  document.addEventListener('touchmove',function(e){var t=e.touches[0];M.x=t.clientX;M.y=t.clientY;},{passive:true});
-  document.addEventListener('touchend',function(){M.x=-999;M.y=-999;});
-  for(var i=0;i<75;i++)P.push({x:Math.random()*1400,y:Math.random()*900,vx:(Math.random()-.5)*.38,vy:(Math.random()-.5)*.38,r:Math.random()*1.5+.7});
+  // No mobile: partículas só visuais, sem reagir ao toque (para não atrapalhar navegação)
+  if(window.innerWidth>768){
+    document.addEventListener('touchmove',function(e){var t=e.touches[0];M.x=t.clientX;M.y=t.clientY;},{passive:true});
+    document.addEventListener('touchend',function(){M.x=-999;M.y=-999;});
+  }
+  var numP=window.innerWidth<=768?30:75;
+  for(var i=0;i<numP;i++)P.push({x:Math.random()*1400,y:Math.random()*900,vx:(Math.random()-.5)*.38,vy:(Math.random()-.5)*.38,r:Math.random()*1.5+.7});
   function tick(){
     cx.clearRect(0,0,W,H);cx.fillStyle='#060812';cx.fillRect(0,0,W,H);
     for(var i=0;i<P.length;i++){var p=P[i];p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1;var dm=Math.hypot(p.x-M.x,p.y-M.y);if(dm<130){p.x+=(p.x-M.x)*.014;p.y+=(p.y-M.y)*.014;}}
@@ -497,6 +550,33 @@ window.addEventListener('DOMContentLoaded',function(){
 });
 function applyRange(){var from=document.getElementById('d-from').value,to=document.getElementById('d-to').value;if(!from||!to)return;filt={type:'range',from:new Date(from),to:new Date(to+'T23:59:59')};document.querySelectorAll('.sb-pbtn').forEach(function(x){x.classList.remove('active');});setLabel(from.split('-').reverse().join('/')+' → '+to.split('-').reverse().join('/'));renderAll();}
 function setLabel(txt){document.getElementById('period-lbl').textContent=txt;document.getElementById('geral-tag').textContent=txt;var el=document.getElementById('ads-tag');if(el)el.textContent=txt;}
+// Tab bar mobile
+document.addEventListener('DOMContentLoaded',function(){
+  document.querySelectorAll('#mobile-tabbar .mtab').forEach(function(btn){
+    btn.addEventListener('click',function(){
+      document.querySelectorAll('#mobile-tabbar .mtab').forEach(function(x){x.classList.remove('active');});
+      btn.classList.add('active');
+      // Sincronizar com sidebar
+      var pg=btn.getAttribute('data-page');
+      document.querySelectorAll('.sb-item').forEach(function(x){x.classList.remove('active');});
+      var sbItem=document.querySelector('.sb-item[data-page="'+pg+'"]');
+      if(sbItem)sbItem.classList.add('active');
+      document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+      document.getElementById('page-'+pg).classList.add('active');
+      var titles={geral:'Visão Geral',anuncios:'Anúncios',agenda:'Agendamentos',funil:'Funil',roi:'ROI',campanhas:'Campanhas'};
+      document.getElementById('page-title').textContent=titles[pg]||pg;
+      // Scroll para o topo
+      document.querySelector('.content').scrollTop=0;
+      var l=getLeads(),c=getConv();
+      if(pg==='anuncios')rAnuncios(l);
+      if(pg==='agenda')rAgenda(l,c);
+      if(pg==='funil')rFunil(l,c);
+      if(pg==='roi')rROI(l);
+      if(pg==='campanhas')rCampanhas(l);
+    });
+  });
+});
+
 function openApp(){document.getElementById('splash').style.display='none';document.getElementById('app').style.display='flex';if(!appReady){renderAll();appReady=true;}}
 function goBack(){document.getElementById('app').style.display='none';document.getElementById('splash').style.display='flex';}
 function renderAll(){var l=getLeads(),c=getConv();rKPIs(l,c);rGeralList(l);rDaily(l);rDonut(l);}
@@ -676,13 +756,13 @@ function rCampanhas(l){
             +'<div style="padding:10px 16px 10px 24px;display:flex;align-items:center;gap:8px;cursor:pointer;background:rgba(255,255,255,.01);" onclick="toggleConj(this)">'
               +'<div style="width:7px;height:7px;border-radius:50%;background:'+colors[cji%colors.length]+';flex-shrink:0;"></div>'
               +'<div style="flex:1;min-width:0;">'
-                +'<div style="font-size:11px;font-weight:500;color:rgba(139,144,184,.85);font-family:Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+conj+'</div>'
-                +'<div style="font-size:10px;color:rgba(58,63,92,.8);font-family:Inter,sans-serif;margin-top:1px;">'+adList.length+' criativo'+(adList.length>1?'s':'')+(cd.cliques>0?' · '+cd.cliques+' cliques':'')+'</div>'
+                +'<div style="font-size:11px;font-weight:500;color:rgba(139,144,184,.85);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+conj+'</div>'
+                +'<div style="font-size:10px;color:rgba(58,63,92,.8);margin-top:1px;">'+adList.length+' criativo'+(adList.length>1?'s':'')+(cd.cliques>0?' · '+cd.cliques+' cliques':'')+'</div>'
               +'</div>'
               +'<div style="display:flex;gap:10px;flex-shrink:0;align-items:center;">'
-                +(cd.leads>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#4a9eff;font-family:Poppins,sans-serif;">'+cd.leads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>':'')
-                +(cd.gasto>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--red);font-family:Poppins,sans-serif;">R$'+Math.round(cd.gasto)+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">gasto</div></div>':'')
-                +(cplConj?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--amber);font-family:Poppins,sans-serif;">R$'+cplConj+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
+                +(cd.leads>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#4a9eff;">'+cd.leads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>':'')
+                +(cd.gasto>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--red);">R$'+Math.round(cd.gasto)+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">gasto</div></div>':'')
+                +(cplConj?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--amber);">R$'+cplConj+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
                 +'<i class="ti ti-chevron-down" style="font-size:14px;color:rgba(58,63,92,.6);transition:transform .2s;"></i>'
               +'</div>'
             +'</div>'
@@ -697,13 +777,13 @@ function rCampanhas(l){
                 return'<div style="padding:8px 16px 8px 44px;display:flex;align-items:center;gap:8px;border-top:1px solid rgba(74,158,255,.04);">'
                   +'<div style="width:5px;height:5px;border-radius:50%;background:rgba(74,158,255,.4);flex-shrink:0;"></div>'
                   +'<div style="flex:1;min-width:0;">'
-                    +'<div style="font-size:11px;font-weight:500;color:rgba(238,242,255,.7);font-family:Inter,sans-serif;">'+adName+'</div>'
-                    +(adVenda?'<div style="font-size:10px;color:var(--green);font-family:Inter,sans-serif;margin-top:1px;">'+adVenda.n+' venda'+(adVenda.n>1?'s':'')+' · R$'+adVenda.val.toLocaleString("pt-BR")+'</div>':'')
+                    +'<div style="font-size:11px;font-weight:500;color:rgba(238,242,255,.7);">'+adName+'</div>'
+                    +(adVenda?'<div style="font-size:10px;color:var(--green);margin-top:1px;">'+adVenda.n+' venda'+(adVenda.n>1?'s':'')+' · R$'+adVenda.val.toLocaleString("pt-BR")+'</div>':'')
                   +'</div>'
                   +'<div style="display:flex;gap:10px;flex-shrink:0;">'
-                    +'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:#4a9eff;font-family:Poppins,sans-serif;">'+adLeads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>'
-                    +(adCliques>0?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:rgba(139,144,184,.7);font-family:Poppins,sans-serif;">'+adCliques+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">cliques</div></div>':'')
-                    +(adCPL?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--amber);font-family:Poppins,sans-serif;">R$'+adCPL+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
+                    +'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:#4a9eff;">'+adLeads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>'
+                    +(adCliques>0?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:rgba(139,144,184,.7);">'+adCliques+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">cliques</div></div>':'')
+                    +(adCPL?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--amber);">R$'+adCPL+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
                   +'</div>'
                 +'</div>';
               }).join('')
