@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -280,29 +279,40 @@ select{color-scheme:dark;}
 }
 
 /* TAB BAR MOBILE — fixa na base */
-#mobile-tabbar{/* TAB BAR MOBILE — fixa na base */
+#mobile-tabbar{/* TAB BAR MOBILE — fixa na base, sempre horizontal */
 #mobile-tabbar{
   display:none;
   position:fixed;
   bottom:0;left:0;right:0;
-  height:64px;
+  height:56px;
   background:rgba(7,9,20,.97);
   border-top:1px solid var(--bdr);
   backdrop-filter:blur(20px);
   z-index:100;
+  flex-direction:row;
   align-items:stretch;
+  overflow:hidden;
 }
 .mtab{
-  flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:3px;cursor:pointer;border:none;background:none;
-  color:var(--t3);transition:color .15s;
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:2px;
+  cursor:pointer;
+  border:none;
+  background:none;
+  color:var(--t3);
+  transition:color .15s;
   -webkit-tap-highlight-color:transparent;
-  padding:8px 4px;
+  padding:6px 2px;
+  min-width:0;
 }
-.mtab i{font-size:20px;}
-.mtab span{font-size:9px;letter-spacing:.5px;text-transform:uppercase;}
+.mtab i{font-size:18px;line-height:1;}
+.mtab span{font-size:8px;letter-spacing:.3px;text-transform:uppercase;white-space:nowrap;line-height:1;}
 .mtab.active{color:var(--acc);}
-.mtab.active i{text-shadow:0 0 12px rgba(74,158,255,.5);}
+.mtab.active i{text-shadow:0 0 10px rgba(74,158,255,.5);}
 
 @media(max-width:768px){
   #mobile-tabbar{display:flex;}
@@ -376,14 +386,6 @@ select{color-scheme:dark;}
         <span class="tb-live f-inter"><span class="ldot"></span>Ao vivo</span>
       </div>
     </header>
-    <!-- Período mobile -->
-    <div class="sb-fil-mobile">
-      <button class="sb-pbtn active" data-f="month">Mês atual</button>
-      <button class="sb-pbtn" data-f="7">7 dias</button>
-      <button class="sb-pbtn" data-f="30">30 dias</button>
-      <button class="sb-pbtn" data-f="90">90 dias</button>
-      <button class="sb-pbtn" data-f="all">Tudo</button>
-    </div>
     <div class="content">
       <div class="page active" id="page-geral">
         <div class="sec f-inter">Resumo do período</div>
