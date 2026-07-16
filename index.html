@@ -152,6 +152,10 @@ body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family
 .footer-l{font-size:10px;color:var(--t3);}
 .footer-l b{color:rgba(139,144,184,.5);}
 
+/* SELECT DARK */
+select option{background:#0d1020;color:#eef2ff;}
+select{color-scheme:dark;}
+
 /* ── CAMPANHAS ── */
 .camp-card{background:var(--card);border:1px solid var(--bdr);border-radius:12px;margin-bottom:10px;overflow:hidden;}
 .camp-card:last-child{margin:0;}
@@ -381,6 +385,8 @@ body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family
   rsz();window.addEventListener('resize',rsz);
   document.addEventListener('mousemove',function(e){M.x=e.clientX;M.y=e.clientY;});
   document.addEventListener('mouseleave',function(){M.x=-999;M.y=-999;});
+  document.addEventListener('touchmove',function(e){var t=e.touches[0];M.x=t.clientX;M.y=t.clientY;},{passive:true});
+  document.addEventListener('touchend',function(){M.x=-999;M.y=-999;});
   for(var i=0;i<75;i++)P.push({x:Math.random()*1400,y:Math.random()*900,vx:(Math.random()-.5)*.38,vy:(Math.random()-.5)*.38,r:Math.random()*1.5+.7});
   function tick(){
     cx.clearRect(0,0,W,H);cx.fillStyle='#060812';cx.fillRect(0,0,W,H);
@@ -665,18 +671,18 @@ function rCampanhas(l){
           var cplConj=cd.leads>0&&cd.gasto>0?(cd.gasto/cd.leads).toFixed(2):null;
           var adList=Object.entries(cd.ads||{}).sort(function(a,b){return b[1].leads-a[1].leads;});
 
-          return'<div style="border-bottom:1px solid rgba(74,158,255,.07);">'
+          return'<div class="conj-wrapper" style="border-bottom:1px solid rgba(74,158,255,.07);">'
             // Conjunto header
             +'<div style="padding:10px 16px 10px 24px;display:flex;align-items:center;gap:8px;cursor:pointer;background:rgba(255,255,255,.01);" onclick="toggleConj(this)">'
               +'<div style="width:7px;height:7px;border-radius:50%;background:'+colors[cji%colors.length]+';flex-shrink:0;"></div>'
               +'<div style="flex:1;min-width:0;">'
-                +'<div style="font-size:11px;font-weight:500;color:rgba(139,144,184,.85);font-family:'Inter',sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+conj+'</div>'
-                +'<div style="font-size:10px;color:rgba(58,63,92,.8);font-family:'Inter',sans-serif;margin-top:1px;">'+adList.length+' criativo'+(adList.length>1?'s':'')+(cd.cliques>0?' · '+cd.cliques+' cliques':'')+'</div>'
+                +'<div style="font-size:11px;font-weight:500;color:rgba(139,144,184,.85);font-family:Inter,sans-serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+conj+'</div>'
+                +'<div style="font-size:10px;color:rgba(58,63,92,.8);font-family:Inter,sans-serif;margin-top:1px;">'+adList.length+' criativo'+(adList.length>1?'s':'')+(cd.cliques>0?' · '+cd.cliques+' cliques':'')+'</div>'
               +'</div>'
               +'<div style="display:flex;gap:10px;flex-shrink:0;align-items:center;">'
-                +(cd.leads>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#4a9eff;font-family:'Poppins',sans-serif;">'+cd.leads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>':'')
-                +(cd.gasto>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--red);font-family:'Poppins',sans-serif;">R$'+Math.round(cd.gasto)+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">gasto</div></div>':'')
-                +(cplConj?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--amber);font-family:'Poppins',sans-serif;">R$'+cplConj+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
+                +(cd.leads>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:#4a9eff;font-family:Poppins,sans-serif;">'+cd.leads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>':'')
+                +(cd.gasto>0?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--red);font-family:Poppins,sans-serif;">R$'+Math.round(cd.gasto)+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">gasto</div></div>':'')
+                +(cplConj?'<div style="text-align:right"><div style="font-size:13px;font-weight:700;color:var(--amber);font-family:Poppins,sans-serif;">R$'+cplConj+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
                 +'<i class="ti ti-chevron-down" style="font-size:14px;color:rgba(58,63,92,.6);transition:transform .2s;"></i>'
               +'</div>'
             +'</div>'
@@ -691,13 +697,13 @@ function rCampanhas(l){
                 return'<div style="padding:8px 16px 8px 44px;display:flex;align-items:center;gap:8px;border-top:1px solid rgba(74,158,255,.04);">'
                   +'<div style="width:5px;height:5px;border-radius:50%;background:rgba(74,158,255,.4);flex-shrink:0;"></div>'
                   +'<div style="flex:1;min-width:0;">'
-                    +'<div style="font-size:11px;font-weight:500;color:rgba(238,242,255,.7);font-family:'Inter',sans-serif;">'+adName+'</div>'
-                    +(adVenda?'<div style="font-size:10px;color:var(--green);font-family:'Inter',sans-serif;margin-top:1px;">'+adVenda.n+' venda'+(adVenda.n>1?'s':'')+' · R$'+adVenda.val.toLocaleString("pt-BR")+'</div>':'')
+                    +'<div style="font-size:11px;font-weight:500;color:rgba(238,242,255,.7);font-family:Inter,sans-serif;">'+adName+'</div>'
+                    +(adVenda?'<div style="font-size:10px;color:var(--green);font-family:Inter,sans-serif;margin-top:1px;">'+adVenda.n+' venda'+(adVenda.n>1?'s':'')+' · R$'+adVenda.val.toLocaleString("pt-BR")+'</div>':'')
                   +'</div>'
                   +'<div style="display:flex;gap:10px;flex-shrink:0;">'
-                    +'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:#4a9eff;font-family:'Poppins',sans-serif;">'+adLeads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>'
-                    +(adCliques>0?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:rgba(139,144,184,.7);font-family:'Poppins',sans-serif;">'+adCliques+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">cliques</div></div>':'')
-                    +(adCPL?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--amber);font-family:'Poppins',sans-serif;">R$'+adCPL+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
+                    +'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:#4a9eff;font-family:Poppins,sans-serif;">'+adLeads+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">leads</div></div>'
+                    +(adCliques>0?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:rgba(139,144,184,.7);font-family:Poppins,sans-serif;">'+adCliques+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">cliques</div></div>':'')
+                    +(adCPL?'<div style="text-align:right"><div style="font-size:12px;font-weight:700;color:var(--amber);font-family:Poppins,sans-serif;">R$'+adCPL+'</div><div style="font-size:9px;color:rgba(58,63,92,.8);text-transform:uppercase;letter-spacing:.5px;">CPL</div></div>':'')
                   +'</div>'
                 +'</div>';
               }).join('')
@@ -711,13 +717,15 @@ function rCampanhas(l){
 
 function toggleCamp(el){
   el.classList.toggle('open');
-  var body=el.nextElementSibling;
+  var body=el.parentElement.querySelector('.camp-body');
+  if(!body)return;
   if(body.style.display==='block')body.style.display='none';
   else body.style.display='block';
 }
 function toggleConj(el){
-  var chevron=el.querySelector('.ti-chevron-down');
-  var body=el.nextElementSibling;
+  var chevron=el.querySelector('i');
+  var body=el.closest('.conj-wrapper').querySelector('.conj-ads-body');
+  if(!body)return;
   if(body.style.display==='block'){
     body.style.display='none';
     if(chevron)chevron.style.transform='';
