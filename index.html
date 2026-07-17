@@ -11,7 +11,7 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 html,body{height:100%;overflow:hidden;}
-body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family:'Inter',sans-serif;}
+body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family:'Inter',sans-serif;}h
 .f-syne{font-family:'Poppins',sans-serif;}
 .f-poppins{font-family:'Poppins',sans-serif;}
 .f-inter{font-family:'Inter',sans-serif;}
@@ -513,7 +513,7 @@ select{color-scheme:dark;}
   document.addEventListener('mousemove',function(e){M.x=e.clientX;M.y=e.clientY;});
   document.addEventListener('mouseleave',function(){M.x=-999;M.y=-999;});
   // No mobile: partículas só visuais, sem reagir ao toque (para não atrapalhar navegação)
-  if(window.innerWidth>768){
+  if(true){
     document.addEventListener('touchmove',function(e){var t=e.touches[0];M.x=t.clientX;M.y=t.clientY;},{passive:true});
     document.addEventListener('touchend',function(){M.x=-999;M.y=-999;});
   }
@@ -577,11 +577,11 @@ async function fetchMeta(){
 function parseAgDate(s){if(!s)return null;var p=s.split('/');if(p.length!==3)return null;return new Date(parseInt(p[2]),parseInt(p[1])-1,parseInt(p[0]));}
 function getLeads(){
   if(!Array.isArray(allLeads))return[];
-  if(filt.type==='month'){var n=new Date(),y=n.getFullYear(),m=n.getMonth();return allLeads.filter(function(l){if(!l.message_timestamp)return true;var d=new Date(l.message_timestamp*1000);return d.getFullYear()===y&&d.getMonth()===m;});}
-  if(filt.type==='range')return allLeads.filter(function(l){if(!l.message_timestamp)return true;var d=new Date(l.message_timestamp*1000);return d>=filt.from&&d<=filt.to;});
+  if(filt.type==='month'){var n=new Date(),y=n.getFullYear(),m=n.getMonth();return allLeads.filter(function(l){if(!l.message_timestamp)return true;var d=new Date(parseInt(l.message_timestamp)*1000);return d.getFullYear()===y&&d.getMonth()===m;});}
+  if(filt.type==='range')return allLeads.filter(function(l){if(!l.message_timestamp)return true;var d=new Date(parseInt(l.message_timestamp)*1000);return d>=filt.from&&d<=filt.to;});
   if(filt.val==='all')return allLeads;
   var cut=new Date();cut.setDate(cut.getDate()-parseInt(filt.val));
-  return allLeads.filter(function(l){if(!l.message_timestamp)return true;return new Date(l.message_timestamp*1000)>=cut;});
+  return allLeads.filter(function(l){if(!l.message_timestamp)return true;return new Date(parseInt(l.message_timestamp)*1000)>=cut;});
 }
 function getConv(){
   if(!Array.isArray(convData))return[];
