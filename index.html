@@ -343,6 +343,27 @@ body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family
           </div>
         </div>
 
+        <div class="sec fi">Por SDR / Atendente</div>
+        <div class="panel">
+          <div class="pt fi">Agendou → Compareceu → Vendeu <span class="ptag-g ptag fi">dados reais</span></div>
+          <div style="overflow-x:auto;">
+            <table class="res-table" id="sdr-table">
+              <thead>
+                <tr>
+                  <th class="fi">Atendente</th>
+                  <th class="fi">Agendou</th>
+                  <th class="fi">Compareceu</th>
+                  <th class="fi">Vendeu</th>
+                  <th class="fi">Conversão</th>
+                </tr>
+              </thead>
+              <tbody id="sdr-tbody">
+                <tr><td colspan="5"><div class="spin-w fi"><span class="spin"></span></div></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
         <div class="sec fi">Evolução — agendamento, comparecimento e venda</div>
         <div class="panel">
           <div class="pt fi">
@@ -688,6 +709,34 @@ function rResultados(l,c){
     bd[k]=(bd[k]||0)+1;
   });
   var keys=Object.keys(bd).sort(function(a,b){var pa=a.split('/'),pb=b.split('/');return new Date(2026,parseInt(pa[1])-1,parseInt(pa[0]))-new Date(2026,parseInt(pb[1])-1,parseInt(pb[0]));});
+  // Tabela SDR
+  var sdrMap = {};
+  c.forEach(function(x) {
+    var nome = (x.atendente || '').trim();
+    if (!nome || nome === '-' || nome === '') return;
+    if (!sdrMap[nome]) sdrMap[nome] = {ag:0, co:0, ve:0};
+    if (['agendado','confirmado','compareceu'].indexOf(x.status) > -1) sdrMap[nome].ag++;
+    if (x.status === 'compareceu') sdrMap[nome].co++;
+    if (x.status_venda === 'comprou') sdrMap[nome].ve++;
+  });
+  var sdrRows = Object.entries(sdrMap).sort(function(a,b){return b[1].ag - a[1].ag;});
+  document.getElementById('sdr-tbody').innerHTML = sdrRows.length ?
+    sdrRows.map(function(r, i) {
+      var n = r[0], v = r[1];
+      var conv = v.ag > 0 ? Math.round(v.ve / v.ag * 100) : 0;
+      var cor = conv >= 20 ? 'var(--green)' : conv >= 10 ? 'var(--amber)' : 'var(--t3)';
+      return '<tr>'
+        + '<td class="fi"><div style="display:flex;align-items:center;gap:8px;">'
+          + '<div style="width:7px;height:7px;border-radius:50%;background:' + CL[i%CL.length] + ';flex-shrink:0;"></div>'
+          + n + '</div></td>'
+        + '<td class="fp" style="color:var(--acc2);">' + (v.ag || '—') + '</td>'
+        + '<td class="fp" style="color:var(--green);">' + (v.co || '—') + '</td>'
+        + '<td class="fp" style="color:var(--amber);">' + (v.ve || '—') + '</td>'
+        + '<td class="fp" style="color:' + cor + ';">' + (v.ag > 0 ? conv + '%' : '—') + '</td>'
+      + '</tr>';
+    }).join('')
+    : '<tr><td colspan="5"><div class="empty fi"><i class="ti ti-user-off"></i>Sem dados de atendente</div></td></tr>';
+
   // Gráfico 3 séries — barras agrupadas
   var bdCo={},bdVe={};
   c.filter(function(x){return x.status==='compareceu'&&x.ad_name;}).forEach(function(x){
