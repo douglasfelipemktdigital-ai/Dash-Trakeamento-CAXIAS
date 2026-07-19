@@ -249,29 +249,23 @@ document.getElementById('btn-import').addEventListener('click', async function()
 
     // Inserir
     log('Gravando...');
+    // UPSERT — insere novo ou atualiza se phone+data já existir (nunca duplica)
+    var HDupsert = Object.assign({}, HD, {'Prefer': 'resolution=merge-duplicates,return=minimal'});
     var ok = 0;
-    for (var k = 0; k < toInsert.length; k += 50) {
-      var batch = toInsert.slice(k, k + 50);
+    var todos = enriched; // enviar todos — o banco resolve conflito
+    for (var k = 0; k < todos.length; k += 50) {
+      var batch = todos.slice(k, k + 50);
       var rI = await fetch(SB + '/rest/v1/conversoes_caxias', {
-        method: 'POST', headers: HD, body: JSON.stringify(batch)
+        method: 'POST', headers: HDupsert, body: JSON.stringify(batch)
       });
       if (rI.ok) ok += batch.length;
-      else log('Erro lote ' + k + ': ' + await rI.text(), 'err');
-    }
-    for (var m = 0; m < toUpdate.length; m++) {
-      var rec = toUpdate[m];
-      var q = '?phone=eq.' + encodeURIComponent(rec.phone) + '&data_agendamento=eq.' + encodeURIComponent(rec.data_agendamento);
-      await fetch(SB + '/rest/v1/conversoes_caxias' + q, {
-        method: 'PATCH', headers: HD,
-        body: JSON.stringify({status: rec.status, status_venda: rec.status_venda, atendente: rec.atendente})
-      });
-      ok++;
+      else { var err = await rI.text(); log('Erro lote ' + k + ': ' + err, 'err'); }
     }
 
-    log('Concluido! Inseridos: ' + toInsert.length + ' | Atualizados: ' + toUpdate.length);
+    log('Concluido! ' + ok + ' registros processados (novos inseridos + existentes atualizados)');
     document.getElementById('result').style.display = 'block';
     document.getElementById('result').className = 'result ok';
-    document.getElementById('result').innerHTML = '<div class="big">' + ok + '</div><div class="desc">registros importados com sucesso<br><a href="index.html">← Voltar ao dashboard</a></div>';
+    document.getElementById('result').innerHTML = '<div class="big">' + ok + '</div><div class="desc">registros processados sem duplicação<br><a href="index.html">← Voltar ao dashboard</a></div>';
 
   } catch(e) {
     log('ERRO: ' + e.message, 'err');
