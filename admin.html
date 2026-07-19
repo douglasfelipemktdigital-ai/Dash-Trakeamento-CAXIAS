@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>Admin · Importar Planilha · Lothus Caxias</title>
+<title>Admin · Lothus Caxias</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;800&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
@@ -15,260 +15,269 @@ body{background:#060812;color:#eef2ff;font-family:'Inter',sans-serif;min-height:
 .lbl{font-size:10px;color:rgba(58,63,92,.8);letter-spacing:1px;text-transform:uppercase;margin-bottom:8px;display:block;}
 .drop{border:1.5px dashed rgba(74,158,255,.25);border-radius:12px;padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .2s,background .2s;margin-bottom:16px;}
 .drop:hover,.drop.over{border-color:rgba(123,47,247,.5);background:rgba(123,47,247,.05);}
-.drop i{font-size:32px;color:rgba(74,158,255,.3);display:block;margin-bottom:8px;}
 .drop-txt{font-size:13px;color:rgba(139,144,184,.6);}
 .drop-txt b{color:rgba(139,144,184,.9);}
 #file-input{display:none;}
-.btn{width:100%;padding:13px;border-radius:10px;border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;letter-spacing:.3px;background:linear-gradient(90deg,#7B2FF7,#F7567C);color:#fff;transition:opacity .2s;margin-top:8px;}
+.btn{width:100%;padding:13px;border-radius:10px;border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;background:linear-gradient(90deg,#7B2FF7,#F7567C);color:#fff;transition:opacity .2s;margin-top:8px;}
 .btn:hover{opacity:.88;}
 .btn:disabled{opacity:.35;cursor:not-allowed;}
-.log{margin-top:20px;background:rgba(0,0,0,.4);border-radius:10px;padding:14px;font-size:11px;font-family:'Inter',sans-serif;color:rgba(0,229,160,.85);max-height:260px;overflow-y:auto;display:none;white-space:pre-wrap;line-height:1.7;}
-.log .err{color:#ff5f7e;}
-.log .warn{color:#ffb347;}
+.log{margin-top:20px;background:rgba(0,0,0,.4);border-radius:10px;padding:14px;font-size:11px;color:rgba(0,229,160,.85);max-height:260px;overflow-y:auto;display:none;white-space:pre-wrap;line-height:1.7;}
+.err{color:#ff5f7e;}
+.warn{color:#ffb347;}
 .result{margin-top:16px;padding:14px;border-radius:10px;text-align:center;display:none;}
 .result.ok{background:rgba(0,229,160,.08);border:1px solid rgba(0,229,160,.2);}
-.result.ok .big{font-family:'Poppins',sans-serif;font-size:28px;font-weight:800;color:#00e5a0;}
-.result .desc{font-size:12px;color:rgba(139,144,184,.7);margin-top:4px;}
-.result .desc a{color:rgba(74,158,255,.8);text-decoration:none;}
+.big{font-family:'Poppins',sans-serif;font-size:28px;font-weight:800;color:#00e5a0;}
+.desc{font-size:12px;color:rgba(139,144,184,.7);margin-top:4px;}
+.desc a{color:rgba(74,158,255,.8);text-decoration:none;}
+.footer-txt{margin-top:20px;padding-top:16px;border-top:1px solid rgba(74,158,255,.08);font-size:10px;color:rgba(58,63,92,.6);text-align:center;line-height:1.8;}
 </style>
 </head>
 <body>
 <div class="card">
   <div class="brand">LOTHUS</div>
   <div class="sub">Admin · Importar planilhas · Caxias</div>
-
-  <label class="lbl">Planilha do Sistema Norte — agendamentos ou vendas (.xlsx)</label>
+  <label class="lbl">Planilha do Norte — agendamentos ou vendas (.xlsx)</label>
   <div class="drop" id="drop-zone">
-    <i>📋</i>
-    <div class="drop-txt">Arraste o arquivo aqui ou <b>clique para selecionar</b><br><span style="font-size:10px;opacity:.6">Relatório de agendamentos <b>ou</b> relatório de vendas do Norte</span></div>
+    <div class="drop-txt">Arraste o arquivo aqui ou <b>clique para selecionar</b><br><span style="font-size:10px;opacity:.6">Agendamentos OU vendas — detecta automaticamente</span></div>
     <input type="file" id="file-input" accept=".xlsx,.xls">
   </div>
   <div id="file-name" style="font-size:11px;color:rgba(74,158,255,.7);min-height:16px;margin-bottom:8px;"></div>
-
   <button class="btn" id="btn-import" disabled>Importar planilha</button>
-
   <div class="log" id="log"></div>
   <div class="result" id="result"></div>
-
-  <div style="margin-top:20px;padding-top:16px;border-top:1px solid rgba(74,158,255,.08);font-size:10px;color:rgba(58,63,92,.6);text-align:center;line-height:1.8;">
-    Criado e monitorado por <b style="color:rgba(139,144,184,.5)">Douglas Felipe</b><br>
-    Agência Lothus · Todos os direitos reservados © 2026
-  </div>
+  <div class="footer-txt">Criado e monitorado por <b style="color:rgba(139,144,184,.5)">Douglas Felipe</b><br>Agência Lothus · Todos os direitos reservados © 2026</div>
 </div>
-
 <script>
-var SB='https://lswrgiumqkuxxyoutgxi.supabase.co';
-var KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxzd3JnaXVtcWt1eHh5b3V0Z3hpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDA1OTQ0MSwiZXhwIjoyMDk5NjM1NDQxfQ.uLF9mTo0-EcWuD1aS91LqyfzAmc78i4fL9jYQHW7-N4';
-var HD={'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json','Prefer':'return=minimal'};
-var fileData=null;
+var SB = 'https://lswrgiumqkuxxyoutgxi.supabase.co';
+var KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imxzd3JnaXVtcWt1eHh5b3V0Z3hpIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NDA1OTQ0MSwiZXhwIjoyMDk5NjM1NDQxfQ.uLF9mTo0-EcWuD1aS91LqyfzAmc78i4fL9jYQHW7-N4';
+var HD = {'apikey': KEY, 'Authorization': 'Bearer ' + KEY, 'Content-Type': 'application/json', 'Prefer': 'return=minimal'};
+var fileData = null;
 
-function log(msg,cls){
-  var el=document.getElementById('log');
-  el.style.display='block';
-  el.innerHTML+='<span class="'+(cls||'')+'">'+msg+'\n</span>';
-  el.scrollTop=el.scrollHeight;
+function log(msg, cls) {
+  var el = document.getElementById('log');
+  el.style.display = 'block';
+  var span = document.createElement('span');
+  if (cls) span.className = cls;
+  span.textContent = msg + '\n';
+  el.appendChild(span);
+  el.scrollTop = el.scrollHeight;
 }
 
-function cleanPhone(p){
-  if(!p||String(p).trim()==='')return null;
-  var d=String(p).replace(/\D/g,'');
-  if(d.length===11)d='55'+d;
-  if(d.length===10)d='55'+d;
-  return(d.length>=12&&d.length<=13)?d:null;
+function cleanPhone(p) {
+  if (!p || String(p).trim() === '') return null;
+  var d = String(p).replace(/\D/g, '');
+  if (d.length === 11) d = '55' + d;
+  if (d.length === 10) d = '55' + d;
+  return (d.length >= 12 && d.length <= 13) ? d : null;
 }
 
-var dropZone=document.getElementById('drop-zone');
-var fileInput=document.getElementById('file-input');
+function cleanValor(v) {
+  if (!v || String(v).trim() === '') return 0;
+  var s = String(v).replace(/[^\d,]/g, '').replace(',', '.');
+  return parseFloat(s) || 0;
+}
 
-dropZone.addEventListener('click',function(){fileInput.click();});
-dropZone.addEventListener('dragover',function(e){e.preventDefault();dropZone.classList.add('over');});
-dropZone.addEventListener('dragleave',function(){dropZone.classList.remove('over');});
-dropZone.addEventListener('drop',function(e){e.preventDefault();dropZone.classList.remove('over');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0]);});
-fileInput.addEventListener('change',function(){if(fileInput.files[0])handleFile(fileInput.files[0]);});
+var dropZone = document.getElementById('drop-zone');
+var fileInput = document.getElementById('file-input');
 
-function handleFile(file){
-  document.getElementById('file-name').textContent='✓ '+file.name;
-  document.getElementById('btn-import').disabled=false;
-  document.getElementById('log').innerHTML='';
-  document.getElementById('log').style.display='none';
-  document.getElementById('result').style.display='none';
-  var reader=new FileReader();
-  reader.onload=function(e){fileData=e.target.result;};
+dropZone.addEventListener('click', function() { fileInput.click(); });
+dropZone.addEventListener('dragover', function(e) { e.preventDefault(); dropZone.classList.add('over'); });
+dropZone.addEventListener('dragleave', function() { dropZone.classList.remove('over'); });
+dropZone.addEventListener('drop', function(e) {
+  e.preventDefault();
+  dropZone.classList.remove('over');
+  if (e.dataTransfer.files[0]) handleFile(e.dataTransfer.files[0]);
+});
+fileInput.addEventListener('change', function() {
+  if (fileInput.files[0]) handleFile(fileInput.files[0]);
+});
+
+function handleFile(file) {
+  document.getElementById('file-name').textContent = '✓ ' + file.name;
+  document.getElementById('btn-import').disabled = false;
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('log').style.display = 'none';
+  document.getElementById('result').style.display = 'none';
+  var reader = new FileReader();
+  reader.onload = function(e) { fileData = e.target.result; };
   reader.readAsArrayBuffer(file);
 }
 
-document.getElementById('btn-import').addEventListener('click',async function(){
-  if(!fileData){alert('Selecione um arquivo primeiro.');return;}
-  var btn=document.getElementById('btn-import');
-  btn.disabled=true;btn.textContent='Importando...';
-  document.getElementById('log').innerHTML='';
-  document.getElementById('result').style.display='none';
+document.getElementById('btn-import').addEventListener('click', async function() {
+  if (!fileData) { alert('Selecione um arquivo primeiro.'); return; }
+  var btn = document.getElementById('btn-import');
+  btn.disabled = true;
+  btn.textContent = 'Importando...';
+  document.getElementById('log').innerHTML = '';
+  document.getElementById('result').style.display = 'none';
 
-  try{
-    // 1. Ler planilha
-    log('1/4 Lendo planilha...');
-    var wb=XLSX.read(fileData,{type:'array'});
-    var ws=wb.Sheets[wb.SheetNames[0]];
-    var raw=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+  try {
+    log('Lendo planilha...');
+    var wb = XLSX.read(fileData, {type: 'array'});
+    var ws = wb.Sheets[wb.SheetNames[0]];
+    var raw = XLSX.utils.sheet_to_json(ws, {header: 1, defval: ''});
 
-    // Detectar tipo de planilha pelo cabeçalho
-    var hi=-1;
-    for(var i=0;i<Math.min(raw.length,5);i++){
-      var row=raw[i].map(function(c){return String(c).trim();});
-      if(row.indexOf('Nome')>-1){hi=i;break;}
+    // Encontrar header
+    var hi = -1;
+    for (var i = 0; i < Math.min(raw.length, 6); i++) {
+      var row = raw[i].map(function(c) { return String(c).trim(); });
+      if (row.indexOf('Nome') > -1) { hi = i; break; }
     }
-    if(hi===-1){log('ERRO: Não encontrei cabeçalho com "Nome"','err');btn.disabled=false;btn.textContent='Importar planilha';return;}
+    if (hi === -1) {
+      log('ERRO: Nao encontrei cabecalho com "Nome"', 'err');
+      btn.disabled = false; btn.textContent = 'Importar planilha'; return;
+    }
 
-    var headers=raw[hi].map(function(c){return String(c).trim();});
-    var iNome=headers.indexOf('Nome');
-    var iTel=headers.indexOf('Telefone');
-    var iStatus=headers.indexOf('Status');
-    var iVenda=headers.indexOf('Status da Venda');
-    var iOrigem=headers.indexOf('Origem');
-    var iData=headers.indexOf('Data');
-    var iAtend=headers.indexOf('Atendente');
-    var iObs=headers.indexOf('Observações do agendamento');
-    var iValorTotal=headers.indexOf('Valor total');
-    var iValorPago=headers.indexOf('Valor pago');
+    var headers = raw[hi].map(function(c) { return String(c).trim(); });
+    var iNome = headers.indexOf('Nome');
+    var iTel = headers.indexOf('Telefone');
+    var iStatus = headers.indexOf('Status');
+    var iVenda = headers.indexOf('Status da Venda');
+    var iOrigem = headers.indexOf('Origem');
+    var iData = headers.indexOf('Data');
+    var iAtend = headers.indexOf('Atendente');
+    var iObs = headers.indexOf('Observacoes do agendamento');
+    if (iObs === -1) iObs = headers.indexOf('Observações do agendamento');
+    var iValorTotal = headers.indexOf('Valor total');
 
-    var isVendas=iValorTotal>-1; // planilha de vendas tem coluna "Valor total"
-    log('   Tipo detectado: '+(isVendas?'PLANILHA DE VENDAS':'PLANILHA DE AGENDAMENTOS'));
+    var isVendas = iValorTotal > -1;
+    log('Tipo: ' + (isVendas ? 'VENDAS' : 'AGENDAMENTOS'));
+    log('Cabecalho na linha ' + (hi + 1) + ', ' + headers.length + ' colunas');
 
-    // ── PLANILHA DE VENDAS ──
-    if(isVendas){
-      var vendasMap={};
-      for(var j=hi+1;j<raw.length;j++){
-        var r=raw[j];
-        var nome=String(r[iNome]||'').trim().toUpperCase();
-        if(!nome)continue;
-        var valorStr=String(r[iValorTotal]||'').replace(/[^\d,]/g,'').replace(',','.');
-        var valor=parseFloat(valorStr)||0;
-        if(!vendasMap[nome])vendasMap[nome]=0;
-        vendasMap[nome]+=valor;
+    // PLANILHA DE VENDAS
+    if (isVendas) {
+      var vendasMap = {};
+      for (var j = hi + 1; j < raw.length; j++) {
+        var r = raw[j];
+        var nome = String(r[iNome] || '').trim().toUpperCase();
+        if (!nome) continue;
+        var valor = cleanValor(r[iValorTotal]);
+        if (!vendasMap[nome]) vendasMap[nome] = 0;
+        vendasMap[nome] += valor;
       }
-      log('   '+Object.keys(vendasMap).length+' clientes com valor na planilha de vendas');
+      log(Object.keys(vendasMap).length + ' clientes na planilha de vendas');
 
-      // Buscar conversoes_caxias que compraram e não têm valor ainda
-      log('2/4 Buscando agendamentos para cruzar por nome...');
-      var rC=await fetch(SB+'/rest/v1/conversoes_caxias?status_venda=eq.comprou&select=id,nome,valor_venda_reais',{headers:HD});
-      var compraram=await rC.json();
-      log('   '+compraram.length+' compradores na base');
+      var rC = await fetch(SB + '/rest/v1/conversoes_caxias?status_venda=eq.comprou&select=id,nome,valor_venda_reais', {headers: HD});
+      var compraram = await rC.json();
+      log(compraram.length + ' compradores na base');
 
-      var atualizados=0,naoEncontrados=0;
-      for(var k=0;k<compraram.length;k++){
-        var c=compraram[k];
-        var nomeUp=String(c.nome||'').trim().toUpperCase();
-        var valor=vendasMap[nomeUp]||0;
-
-        // Se não achou exato, tenta 2 palavras em comum
-        if(!valor){
-          var palavras=nomeUp.split(' ').filter(function(p){return p.length>2;});
-          for(var vn in vendasMap){
-            var palavrasVn=vn.split(' ').filter(function(p){return p.length>2;});
-            var comum=palavras.filter(function(p){return palavrasVn.indexOf(p)>-1;});
-            if(comum.length>=2){valor=vendasMap[vn];break;}
+      var atualiz = 0, naoAch = 0;
+      for (var k = 0; k < compraram.length; k++) {
+        var c = compraram[k];
+        var nomeUp = String(c.nome || '').trim().toUpperCase();
+        var valor = vendasMap[nomeUp] || 0;
+        if (!valor) {
+          var palavras = nomeUp.split(' ').filter(function(p) { return p.length > 2; });
+          for (var vn in vendasMap) {
+            var pvn = vn.split(' ').filter(function(p) { return p.length > 2; });
+            var comum = palavras.filter(function(p) { return pvn.indexOf(p) > -1; });
+            if (comum.length >= 2) { valor = vendasMap[vn]; break; }
           }
         }
-
-        if(valor>0){
-          await fetch(SB+'/rest/v1/conversoes_caxias?id=eq.'+c.id,{method:'PATCH',headers:HD,body:JSON.stringify({valor_venda_reais:valor})});
-          atualizados++;
-        }else{
-          naoEncontrados++;
+        if (valor > 0) {
+          await fetch(SB + '/rest/v1/conversoes_caxias?id=eq.' + c.id, {
+            method: 'PATCH', headers: HD,
+            body: JSON.stringify({valor_venda_reais: valor})
+          });
+          atualiz++;
+        } else {
+          naoAch++;
         }
       }
-
-      log('
-✓ Planilha de vendas processada!');
-      log('  Valores atualizados: '+atualizados);
-      log('  Sem correspondência de nome: '+naoEncontrados+' (normal se não há rastreamento)');
-
-      document.getElementById('result').style.display='block';
-      document.getElementById('result').className='result ok';
-      document.getElementById('result').innerHTML='<div class="big">'+atualizados+'</div><div class="desc">vendas com valor atualizado no Supabase<br>O dashboard já reflete os valores. <a href="index.html">← Voltar ao dashboard</a></div>';
-      btn.disabled=false;btn.textContent='Importar planilha';
+      log('Valores atualizados: ' + atualiz);
+      log('Sem correspondencia: ' + naoAch);
+      document.getElementById('result').style.display = 'block';
+      document.getElementById('result').className = 'result ok';
+      document.getElementById('result').innerHTML = '<div class="big">' + atualiz + '</div><div class="desc">vendas atualizadas no Supabase<br><a href="index.html">← Voltar ao dashboard</a></div>';
+      btn.disabled = false; btn.textContent = 'Importar planilha';
       return;
     }
 
-    // ── PLANILHA DE AGENDAMENTOS ──
-    if(iTel===-1){log('ERRO: Planilha de agendamentos precisa da coluna "Telefone"','err');btn.disabled=false;btn.textContent='Importar planilha';return;}
+    // PLANILHA DE AGENDAMENTOS
+    if (iTel === -1) {
+      log('ERRO: Planilha de agendamentos precisa da coluna "Telefone"', 'err');
+      btn.disabled = false; btn.textContent = 'Importar planilha'; return;
+    }
 
-    var records=[];
-    for(var j=hi+1;j<raw.length;j++){
-      var r=raw[j];
-      var phone=cleanPhone(r[iTel]);
-      if(!phone)continue;
+    var records = [];
+    for (var j = hi + 1; j < raw.length; j++) {
+      var r = raw[j];
+      var phone = cleanPhone(r[iTel]);
+      if (!phone) continue;
       records.push({
-        phone:phone,
-        nome:String(r[iNome]||'').trim(),
-        status:String(r[iStatus]||'').trim().toLowerCase(),
-        status_venda:String(r[iVenda]||'').trim().toLowerCase(),
-        origem_norte:String(r[iOrigem]||'').trim(),
-        data_agendamento:String(r[iData]||'').trim(),
-        atendente:String(r[iAtend]||'').trim(),
-        observacoes:String(r[iObs]||'').trim().slice(0,200)
+        phone: phone,
+        nome: String(r[iNome] || '').trim(),
+        status: String(r[iStatus] || '').trim().toLowerCase(),
+        status_venda: String(r[iVenda] || '').trim().toLowerCase(),
+        origem_norte: String(r[iOrigem] || '').trim(),
+        data_agendamento: String(r[iData] || '').trim(),
+        atendente: String(r[iAtend] || '').trim(),
+        observacoes: String(r[iObs] || '').trim().slice(0, 200)
       });
     }
-    log('   '+records.length+' registros com telefone válido');
+    log(records.length + ' registros com telefone valido');
 
-    // 2. Buscar leads para cruzamento
-    log('2/4 Cruzando com leads rastreados...');
-    var rL=await fetch(SB+'/rest/v1/leads_whatsapp?select=phone,ad_name,adset_id&limit=2000',{headers:HD});
-    var leads=await rL.json();
-    var pm={};
-    leads.forEach(function(l){if(l.phone)pm[l.phone]={ad_name:l.ad_name,adset_id:l.adset_id};});
-    log('   '+Object.keys(pm).length+' leads mapeados no Supabase');
+    // Cruzar com leads
+    log('Cruzando com leads rastreados...');
+    var rL = await fetch(SB + '/rest/v1/leads_whatsapp?select=phone,ad_name,adset_id&limit=2000', {headers: HD});
+    var leads = await rL.json();
+    var pm = {};
+    leads.forEach(function(l) { if (l.phone) pm[l.phone] = {ad_name: l.ad_name, adset_id: l.adset_id}; });
+    log(Object.keys(pm).length + ' leads mapeados');
 
-    var enriched=records.map(function(r){
-      return Object.assign({},r,{
-        ad_name:pm[r.phone]?pm[r.phone].ad_name:null,
-        adset_id:pm[r.phone]?pm[r.phone].adset_id:null
+    var enriched = records.map(function(r) {
+      var match = pm[r.phone];
+      return Object.assign({}, r, {
+        ad_name: match ? match.ad_name : null,
+        adset_id: match ? match.adset_id : null
       });
     });
-    var matched=enriched.filter(function(r){return r.ad_name;}).length;
-    log('   '+matched+' registros com anúncio identificado');
+    var matched = enriched.filter(function(r) { return r.ad_name; }).length;
+    log(matched + ' com anuncio identificado');
 
-    // 3. Buscar existentes para deduplicar
-    log('3/4 Verificando duplicados...');
-    var rEx=await fetch(SB+'/rest/v1/conversoes_caxias?select=phone,data_agendamento&limit=2000',{headers:HD});
-    var existing=rEx.ok?await rEx.json():[];
-    var existSet={};
-    existing.forEach(function(e){existSet[e.phone+'|'+e.data_agendamento]=true;});
-    log('   '+existing.length+' registros já existentes');
+    // Buscar existentes
+    log('Verificando duplicados...');
+    var rEx = await fetch(SB + '/rest/v1/conversoes_caxias?select=phone,data_agendamento&limit=2000', {headers: HD});
+    var existing = rEx.ok ? await rEx.json() : [];
+    var existSet = {};
+    existing.forEach(function(e) { existSet[e.phone + '|' + e.data_agendamento] = true; });
+    log(existing.length + ' registros ja existentes');
 
-    var toInsert=enriched.filter(function(r){return!existSet[r.phone+'|'+r.data_agendamento];});
-    var toUpdate=enriched.filter(function(r){return existSet[r.phone+'|'+r.data_agendamento];});
-    log('   Novos: '+toInsert.length+' · Atualizar: '+toUpdate.length);
+    var toInsert = enriched.filter(function(r) { return !existSet[r.phone + '|' + r.data_agendamento]; });
+    var toUpdate = enriched.filter(function(r) { return existSet[r.phone + '|' + r.data_agendamento]; });
+    log('Novos: ' + toInsert.length + ' | Atualizar: ' + toUpdate.length);
 
-    // 4. Inserir e atualizar
-    log('4/4 Gravando no Supabase...');
-    var ok=0;
-    for(var k=0;k<toInsert.length;k+=50){
-      var batch=toInsert.slice(k,k+50);
-      var rI=await fetch(SB+'/rest/v1/conversoes_caxias',{method:'POST',headers:HD,body:JSON.stringify(batch)});
-      if(rI.ok)ok+=batch.length;
-      else{var txt=await rI.text();log('   Erro lote '+k+': '+txt,'err');}
+    // Inserir
+    log('Gravando...');
+    var ok = 0;
+    for (var k = 0; k < toInsert.length; k += 50) {
+      var batch = toInsert.slice(k, k + 50);
+      var rI = await fetch(SB + '/rest/v1/conversoes_caxias', {
+        method: 'POST', headers: HD, body: JSON.stringify(batch)
+      });
+      if (rI.ok) ok += batch.length;
+      else log('Erro lote ' + k + ': ' + await rI.text(), 'err');
     }
-    for(var m=0;m<toUpdate.length;m++){
-      var rec=toUpdate[m];
-      var q='?phone=eq.'+encodeURIComponent(rec.phone)+'&data_agendamento=eq.'+encodeURIComponent(rec.data_agendamento);
-      await fetch(SB+'/rest/v1/conversoes_caxias'+q,{method:'PATCH',headers:HD,body:JSON.stringify({status:rec.status,status_venda:rec.status_venda,atendente:rec.atendente})});
+    for (var m = 0; m < toUpdate.length; m++) {
+      var rec = toUpdate[m];
+      var q = '?phone=eq.' + encodeURIComponent(rec.phone) + '&data_agendamento=eq.' + encodeURIComponent(rec.data_agendamento);
+      await fetch(SB + '/rest/v1/conversoes_caxias' + q, {
+        method: 'PATCH', headers: HD,
+        body: JSON.stringify({status: rec.status, status_venda: rec.status_venda, atendente: rec.atendente})
+      });
       ok++;
     }
 
-    log('\n✓ Concluído!');
-    log('  Novos inseridos: '+toInsert.length);
-    log('  Atualizados: '+toUpdate.length);
-    log('  Com anúncio identificado: '+matched);
+    log('Concluido! Inseridos: ' + toInsert.length + ' | Atualizados: ' + toUpdate.length);
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').className = 'result ok';
+    document.getElementById('result').innerHTML = '<div class="big">' + ok + '</div><div class="desc">registros importados com sucesso<br><a href="index.html">← Voltar ao dashboard</a></div>';
 
-    document.getElementById('result').style.display='block';
-    document.getElementById('result').className='result ok';
-    document.getElementById('result').innerHTML='<div class="big">'+ok+'</div><div class="desc">registros importados com sucesso<br>O dashboard já reflete os dados atualizados. <a href="index.html">← Voltar ao dashboard</a></div>';
-
-  }catch(e){
-    log('ERRO: '+e.message,'err');
+  } catch(e) {
+    log('ERRO: ' + e.message, 'err');
   }
-  btn.disabled=false;btn.textContent='Importar planilha';
+  btn.disabled = false;
+  btn.textContent = 'Importar planilha';
 });
 </script>
 </body>
