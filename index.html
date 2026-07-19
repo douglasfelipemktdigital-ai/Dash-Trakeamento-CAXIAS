@@ -385,12 +385,6 @@ body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family
             <div class="kc-d fi">conversão geral</div>
             <div class="kbar"><div class="kbar-f" id="sdr-taxa-b" style="width:0%;background:var(--lp)"></div></div>
           </div>
-          <div class="kc"><i class="ti ti-cash kc-ico"></i>
-            <div class="kc-lbl fi">Faturamento SDR</div>
-            <div class="kc-val-md fp" id="sdr-fat">—</div>
-            <div class="kc-d fi">vendas com valor</div>
-            <div class="kbar"><div class="kbar-f" id="sdr-fat-b" style="width:0%;background:var(--green)"></div></div>
-          </div>
         </div>
 
         <div class="sec fi">Por atendente</div>
@@ -404,8 +398,6 @@ body{background:#060812;color:#eef2ff;font-size:14px;line-height:1.5;font-family
                   <th class="fi">Agendou</th>
                   <th class="fi">Compareceu</th>
                   <th class="fi">Vendeu</th>
-                  <th class="fi">Faturamento</th>
-                  <th class="fi">Ticket médio</th>
                   <th class="fi">Conversão</th>
                 </tr>
               </thead>
@@ -565,13 +557,7 @@ function rSDR(c) {
   document.getElementById('sdr-ve-b').style.width = Math.min(100, totalVe/Math.max(totalCo,1)*100) + '%';
   document.getElementById('sdr-taxa').textContent = taxa > 0 ? taxa + '%' : '—';
   document.getElementById('sdr-taxa-b').style.width = Math.min(100, taxa*2) + '%';
-  // Faturamento total SDR
-  var totalFat = rows.reduce(function(a,r){return a+r[1].fat;}, 0);
-  var fatEl = document.getElementById('sdr-fat');
-  if (fatEl) {
-    fatEl.textContent = totalFat > 0 ? 'R$' + totalFat.toLocaleString('pt-BR') : '—';
-    document.getElementById('sdr-fat-b').style.width = totalFat > 0 ? '60%' : '0%';
-  }
+
 
   // Tabela por atendente — total + info de rastreados
   document.getElementById('sdr-tbody2').innerHTML = rows.length ?
